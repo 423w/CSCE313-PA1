@@ -1,0 +1,18 @@
+I used scaling sizes of blank binary files from 1MB to 1GB to test transfer times.
+
+I generated my files using the command dd if=/dev/zero of=BIMDC/test.bin bs=1024k count=<count>.
+
+I then tested them using time ./client -f test.bin.
+
+The times I got are seen in the table below.
+
+| File Size | Real Time | User Time | Sys Time  |
+|-----------|-----------|-----------|-----------|
+| 1 MB      | 0m1.387s  | 0m0.182s  | 0m0.257s  |
+| 10 MB     | 0m3.507s  | 0m0.485s  | 0m1.931s  |
+| 100 MB    | 0m20.264s | 0m3.217s  | 0m15.154s |
+| 1 GB      | 3m10.702s | 0m32.197s | 2m28.415s |
+
+As the file sizes scaled, their transfer times scaled at fairly similar rates, suggesting an O(n) relationship.
+I also noticed that adding user and sys time never even got close to the real time, leading to the conclusion that a lot of time is spent just waiting rather than executing.
+To build upon the previous statement, sys is always significantly longer than user, which is most likely due to API calls.
